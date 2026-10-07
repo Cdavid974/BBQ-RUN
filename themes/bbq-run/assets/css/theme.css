@@ -1,0 +1,269 @@
+:root {
+	--bbq-black: #0e0e0f;
+	--bbq-gold: #eb9932;
+	--bbq-bronze: #8c6732;
+	--bbq-white: #fff;
+	--bbq-line: var(--bbq-bronze);
+	--bbq-space-1: 8px;
+	--bbq-space-2: 16px;
+	--bbq-space-3: 24px;
+	--bbq-space-4: 32px;
+	--bbq-space-5: 40px;
+	--bbq-space-6: 56px;
+	--bbq-space-7: 80px;
+	--bbq-content-width: 75ch;
+	--bbq-page-gutter: 24px;
+	--bbq-page-margin: 56px;
+	--e-global-color-primary: var(--bbq-black);
+	--e-global-color-secondary: var(--bbq-bronze);
+	--e-global-color-text: var(--bbq-black);
+	--e-global-color-accent: var(--bbq-gold);
+	--ast-global-color-0: var(--bbq-black);
+	--ast-global-color-1: var(--bbq-bronze);
+	--ast-global-color-2: var(--bbq-black);
+	--ast-global-color-3: var(--bbq-black);
+	--ast-global-color-4: var(--bbq-white);
+	--ast-global-color-5: var(--bbq-white);
+	--ast-global-color-6: var(--bbq-white);
+	--ast-global-color-7: var(--bbq-black);
+	--ast-global-color-8: var(--bbq-bronze);
+}
+
+body {
+	--e-global-color-primary: var(--bbq-black);
+	--e-global-color-secondary: var(--bbq-bronze);
+	--e-global-color-text: var(--bbq-black);
+	--e-global-color-accent: var(--bbq-gold);
+	--ast-global-color-0: var(--bbq-black);
+	--ast-global-color-1: var(--bbq-bronze);
+	--ast-global-color-2: var(--bbq-black);
+	--ast-global-color-3: var(--bbq-black);
+	--ast-global-color-4: var(--bbq-white);
+	--ast-global-color-5: var(--bbq-white);
+	--ast-global-color-6: var(--bbq-white);
+	--ast-global-color-7: var(--bbq-black);
+	--ast-global-color-8: var(--bbq-bronze);
+	color: var(--bbq-black) !important;
+	background-color: var(--bbq-white) !important;
+	font-family: 'Roboto', sans-serif !important;
+	font-size: 18px;
+	font-weight: 400;
+	line-height: 27px;
+	text-align: left;
+}
+
+body[class*='elementor-kit'] {
+	--e-global-color-primary: var(--bbq-black);
+	--e-global-color-secondary: var(--bbq-bronze);
+	--e-global-color-text: var(--bbq-black);
+	--e-global-color-accent: var(--bbq-gold);
+}
+
+body #content :is(p, .entry-content p) {
+	max-width: var(--bbq-content-width);
+	font-size: 18px;
+	line-height: 27px;
+}
+
+body #content :is(h1, h2, h3, h4, h5, h6, .elementor-heading-title) {
+	color: var(--bbq-black) !important;
+	font-family: 'Montserrat', sans-serif !important;
+	font-weight: 600;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+	text-align: left;
+}
+
+body #content :is(h1, .elementor-widget-heading h1.elementor-heading-title) {
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 53px;
+}
+
+body #content :is(h2, .elementor-widget-heading h2.elementor-heading-title) {
+	font-size: 32px;
+	line-height: 38px;
+}
+
+body #content :is(h3, .elementor-widget-heading h3.elementor-heading-title) {
+	font-size: 24px;
+	line-height: 30px;
+}
+
+body #content :is(h4, h5, h6) {
+	font-size: 18px;
+	line-height: 1.35;
+}
+
+body #content :is(li, .elementor-widget-text-editor) {
+	font-size: 18px;
+	line-height: 27px;
+}
+
+body #content :is(small, figcaption, .wp-caption-text, .elementor-image-carousel-caption) {
+	font-size: 14px;
+	line-height: 20px;
+}
+
+body #content :is(a, .elementor a) {
+	color: var(--bbq-bronze) !important;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.18em;
+}
+
+body #content :is(a:hover, a:focus-visible, .elementor a:hover, .elementor a:focus-visible) {
+	color: var(--bbq-black) !important;
+}
+
+body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next), input[type='button'], input[type='submit'], input[type='reset'], .button, .ast-button, .ast-custom-button, .elementor-button, .wp-block-button__link) {
+	min-height: 44px;
+	padding: 12px 24px;
+	border: 1px solid var(--bbq-gold);
+	border-radius: 4px;
+	background: var(--bbq-gold);
+	color: var(--bbq-black) !important;
+	font-family: 'Roboto', sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1.25;
+	text-decoration: none;
+	box-shadow: none;
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next):hover, input[type='button']:hover, input[type='submit']:hover, input[type='reset']:hover, .button:hover, .ast-button:hover, .ast-custom-button:hover, .elementor-button:hover, .wp-block-button__link:hover) {
+	border-color: var(--bbq-bronze);
+	background: var(--bbq-bronze);
+	color: var(--bbq-white) !important;
+}
+
+body #content :is(button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, .elementor-button:focus-visible, .wp-block-button__link:focus-visible) {
+	outline: 3px solid var(--bbq-gold);
+	outline-offset: 3px;
+}
+
+body #content :is(input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']), select, textarea) {
+	max-width: 100%;
+	min-height: 44px;
+	padding: 10px 12px;
+	border: 1px solid var(--bbq-bronze);
+	border-radius: 4px;
+	background-color: var(--bbq-white) !important;
+	color: var(--bbq-black) !important;
+	font: 400 1rem/1.4 'Roboto', sans-serif;
+	box-shadow: none;
+}
+
+body #content input::placeholder,
+body #content textarea::placeholder {
+	color: var(--bbq-bronze);
+	opacity: 1;
+}
+
+body #content :is(hr, .elementor-divider-separator, .ast-separate-container .ast-article-post, .ast-separate-container .ast-article-single) {
+	border-color: var(--bbq-line);
+}
+
+body #content > .ast-container {
+	padding-inline: var(--bbq-page-margin);
+}
+
+/* Les pages sans barre latérale peuvent aller d'un bord à l'autre.
+ * Les marges du contenu se règlent ensuite dans les sections de la page ;
+ * la classe .bbq-container conserve un contenu centré selon la charte.
+ */
+body.page.ast-no-sidebar #content > .ast-container {
+	width: 100%;
+	max-width: none;
+	padding-inline: 0;
+}
+
+body.page.ast-no-sidebar #content #primary {
+	width: 100%;
+	max-width: none;
+}
+
+/* Optional section classes for deliberate brand-color panels in the builder. */
+.bbq-section-dark {
+	background-color: var(--bbq-black) !important;
+	color: var(--bbq-white) !important;
+}
+
+body #content .bbq-section-dark :is(h1, h2, h3, h4, h5, h6, p, li, strong, .elementor-heading-title) {
+	color: var(--bbq-white) !important;
+}
+
+body #content .bbq-section-dark a {
+	color: var(--bbq-gold) !important;
+}
+
+body #content .bbq-section-gold a {
+	color: var(--bbq-black) !important;
+}
+
+.bbq-section-gold {
+	background-color: var(--bbq-gold) !important;
+	color: var(--bbq-black) !important;
+}
+
+.bbq-section-bronze {
+	background-color: var(--bbq-bronze) !important;
+	color: var(--bbq-white) !important;
+}
+
+body #content .bbq-section-bronze :is(h1, h2, h3, h4, h5, h6, p, li, strong, .elementor-heading-title),
+body #content .bbq-section-bronze a {
+	color: var(--bbq-white) !important;
+}
+
+body #content .bbq-section-dark :is(button, .elementor-button, .wp-block-button__link),
+body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-button__link) {
+	background-color: var(--bbq-gold);
+	color: var(--bbq-black) !important;
+}
+
+body #content .bbq-section-dark :is(button, .elementor-button, .wp-block-button__link):hover,
+body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-button__link):hover {
+	background-color: var(--bbq-bronze);
+	color: var(--bbq-white) !important;
+}
+
+/* Shared spacing tokens and an opt-in 12-column grid; no layout is imposed. */
+.bbq-grid {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: var(--bbq-space-3);
+}
+
+.bbq-container {
+	width: min(calc(100% - 2 * var(--bbq-page-margin)), 1440px);
+	margin-inline: auto;
+}
+
+@media (max-width: 767px) {
+	:root, body {
+		--bbq-page-gutter: 16px;
+		--bbq-page-margin: 24px;
+	}
+
+	body #content :is(h1, .elementor-widget-heading h1.elementor-heading-title) {
+		font-size: clamp(32px, 9vw, 40px);
+		line-height: 1.1;
+	}
+
+	body #content :is(h2, .elementor-widget-heading h2.elementor-heading-title) {
+		font-size: 28px;
+		line-height: 34px;
+	}
+
+	.bbq-grid {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--bbq-space-2);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body #content :is(button, .button, .ast-button, .elementor-button, .wp-block-button__link) {
+		transition: none;
+	}
+}

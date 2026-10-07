@@ -1,0 +1,7 @@
+# Exclure les documents du dépôt
+/Documents/
+/documents/
+
+# Sauvegardes et journaux générés localement.
+/ai1wm-backups/
+/wflogs/

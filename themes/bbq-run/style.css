@@ -6,8 +6,51 @@ Template: astra
 Version: 1.0.0
 Text Domain: bbq-run
 */
-/*Test d'héritage 
+/*Test d'héritage
 body {
     border-top: 8px solid red;
 }
 */
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('assets/fonts/Roboto.ttf') format('truetype');
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Roboto';
+	src: url('assets/fonts/Roboto-Italic.ttf') format('truetype');
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	src: url('assets/fonts/Montserrat.ttf') format('truetype');
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Montserrat';
+	src: url('assets/fonts/Montserrat-Italic.ttf') format('truetype');
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+}
+
+/* Applique les polices locales au contenu sans toucher aux icônes. */
+body,
+body #content :where(p, a, li, dt, dd, blockquote, figcaption, label, legend, small, strong, em, b, span, div, button, input, select, textarea, option, summary, time, address, td, th, .elementor-heading-title, .elementor-button, .elementor-icon-list-text, .elementor-nav-menu--main .elementor-item) {
+	font-family: 'Roboto', sans-serif;
+}
+
+body #content :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title),
+body #content :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title) :where(a, span, strong, em, b, small) {
+	font-family: 'Montserrat', sans-serif;
+}

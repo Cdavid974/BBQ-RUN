@@ -1,0 +1,260 @@
+/* Mise en page dédiée à la page introuvable. Les sélecteurs précis limitent les conflits avec Astra. */
+body.error404 #page .bbq-404 {
+	max-width: 1320px;
+	margin-inline: auto;
+	padding: clamp(48px, 8vw, 104px) clamp(20px, 5vw, 72px) 72px;
+	color: var(--bbq-black);
+	font-family: 'Roboto', sans-serif;
+}
+
+body.error404 #page .bbq-404__hero {
+	display: grid;
+	grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr);
+	align-items: center;
+	gap: clamp(32px, 7vw, 96px);
+}
+
+body.error404 #page .bbq-404__content {
+	max-width: 620px;
+}
+
+body.error404 #page .bbq-404__eyebrow {
+	margin: 0 0 16px;
+	color: var(--bbq-bronze);
+	font-size: 14px;
+	font-weight: 700;
+	letter-spacing: .14em;
+	line-height: 1.4;
+	text-transform: uppercase;
+}
+
+body.error404 #page .bbq-404 h1 {
+	max-width: 12ch;
+	margin: 0 0 22px;
+	color: var(--bbq-black) !important;
+	font-family: 'Montserrat', sans-serif !important;
+	font-size: 48px;
+	font-weight: 700;
+	line-height: 1.1;
+	letter-spacing: -.02em;
+}
+
+body.error404 #page .bbq-404__message {
+	max-width: 58ch;
+	margin: 0 0 28px;
+	font-size: 18px;
+	line-height: 27px;
+}
+
+body.error404 #page .bbq-404__home {
+	display: inline-flex;
+	min-height: 48px;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 12px 22px;
+	border: 1px solid var(--bbq-gold);
+	border-radius: 4px;
+	background: var(--bbq-gold);
+	color: var(--bbq-black) !important;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 1.3;
+	text-decoration: none;
+	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+body.error404 #page .bbq-404__home:hover {
+	border-color: var(--bbq-bronze);
+	background: var(--bbq-bronze);
+	color: var(--bbq-white) !important;
+}
+
+body.error404 #page .bbq-404__home:focus-visible,
+body.error404 #page .bbq-404__posts a:focus-visible {
+	/* Un contour visible aide à repérer la navigation au clavier. */
+	outline: 3px solid var(--bbq-gold);
+	outline-offset: 4px;
+}
+
+body.error404 #page .bbq-404__search-wrap {
+	margin-top: 44px;
+}
+
+body.error404 #page .bbq-404__search-wrap h2,
+body.error404 #page .bbq-404__recent h2 {
+	margin: 0 0 16px;
+	color: var(--bbq-black) !important;
+	font-family: 'Montserrat', sans-serif !important;
+	font-size: 24px;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+body.error404 #page .bbq-404 .search-form {
+	display: flex;
+	max-width: 560px;
+	gap: 10px;
+}
+
+body.error404 #page .bbq-404 .search-form label {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+body.error404 #page .bbq-404 .search-field {
+	width: 100%;
+	min-height: 48px !important;
+}
+
+body.error404 #page .bbq-404 .search-submit {
+	flex: 0 0 auto;
+	min-height: 48px !important;
+	margin: 0;
+}
+
+body.error404 #page .bbq-404__search-error {
+	min-height: 0;
+	margin: 0;
+	color: var(--bbq-bronze);
+	font-size: 14px;
+	line-height: 20px;
+}
+
+body.error404 #page .bbq-404__search-error:not(:empty) {
+	margin-top: 8px;
+}
+
+body.error404 #page .bbq-404__art {
+	position: relative;
+	width: 100%;
+	max-width: 520px;
+	margin-inline: auto;
+}
+
+body.error404 #page .bbq-404__illustration {
+	display: block;
+	width: 100%;
+	height: auto;
+	overflow: visible;
+}
+
+body.error404 #page .bbq-404__number {
+	position: absolute;
+	right: 0;
+	bottom: 1%;
+	color: var(--bbq-bronze);
+	font-family: 'Montserrat', sans-serif;
+	font-size: clamp(30px, 5vw, 52px);
+	font-weight: 700;
+	letter-spacing: .12em;
+}
+
+body.error404 #page .bbq-404__recent {
+	display: grid;
+	grid-template-columns: minmax(200px, .7fr) minmax(0, 1.3fr);
+	gap: 48px;
+	margin-top: clamp(64px, 9vw, 112px);
+	padding-top: 32px;
+	border-top: 1px solid var(--bbq-bronze);
+}
+
+body.error404 #page .bbq-404__recent .bbq-404__eyebrow {
+	margin-bottom: 10px;
+}
+
+body.error404 #page .bbq-404__posts {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+body.error404 #page .bbq-404__post {
+	min-width: 0;
+	padding: 16px;
+	border: 1px solid var(--bbq-bronze);
+	border-radius: 0;
+}
+
+body.error404 #page .bbq-404__posts a {
+	display: block;
+	margin-bottom: 8px;
+	color: var(--bbq-black) !important;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.4;
+	text-decoration: none;
+	overflow-wrap: anywhere;
+}
+
+body.error404 #page .bbq-404__posts a:hover {
+	color: var(--bbq-bronze) !important;
+	text-decoration: underline;
+}
+
+body.error404 #page .bbq-404__posts time {
+	color: var(--bbq-bronze);
+	font-size: 14px;
+	line-height: 20px;
+}
+
+@media (max-width: 800px) {
+	/* Sur tablette, l'illustration et les articles passent sous le texte. */
+	body.error404 #page .bbq-404 {
+		padding: 48px 24px 56px;
+	}
+
+	body.error404 #page .bbq-404__hero {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+
+	body.error404 #page .bbq-404__content {
+		max-width: 680px;
+	}
+
+	body.error404 #page .bbq-404__art {
+		width: min(100%, 440px);
+	}
+
+	body.error404 #page .bbq-404__recent {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+}
+
+@media (max-width: 560px) {
+	/* Sur petit écran, les contrôles et les articles s'empilent pour rester lisibles. */
+	body.error404 #page .bbq-404 {
+		padding-inline: 0;
+	}
+
+	body.error404 #page .bbq-404 h1 {
+		font-size: 32px;
+		line-height: 1.12;
+	}
+
+	body.error404 #page .bbq-404 .search-form {
+		align-items: stretch;
+		flex-direction: column;
+	}
+
+	body.error404 #page .bbq-404 .search-submit {
+		width: 100%;
+	}
+
+	body.error404 #page .bbq-404__posts {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	/* Respecte la préférence système en retirant la transition du bouton. */
+	body.error404 #page .bbq-404__home {
+		transition: none;
+	}
+}

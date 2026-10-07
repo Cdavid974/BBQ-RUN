@@ -1,0 +1,119 @@
+/* La page d'accueil occupe toute la largeur malgré le conteneur Astra. */
+body.home #content > .ast-container,
+body.front-page #content > .ast-container {
+	width: 100%;
+	max-width: none;
+	padding-inline: 0;
+}
+
+body.home #content #primary,
+body.front-page #content #primary {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+}
+
+.bbq-home {
+	margin: 0;
+}
+
+.bbq-hero {
+	position: relative;
+	display: flex;
+	min-height: clamp(480px, 65vh, 720px);
+	align-items: center;
+	overflow: hidden;
+	padding: clamp(48px, 7vw, 104px) max(24px, calc((100vw - 1240px) / 2));
+	background-color: #171614;
+}
+
+.bbq-hero__image,
+.bbq-hero__shade {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.bbq-hero__image {
+	z-index: 0;
+	object-fit: cover;
+	object-position: center 54%;
+}
+
+.bbq-hero__shade {
+	z-index: 1;
+	background: rgba(0, 0, 0, 0.52);
+}
+
+.bbq-hero__content {
+	position: relative;
+	z-index: 2;
+	width: min(100%, 650px);
+}
+
+body #content .bbq-hero .bbq-hero__eyebrow {
+	margin: 0 0 16px;
+	color: var(--bbq-gold) !important;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.18em;
+	text-transform: uppercase;
+}
+
+body #content .bbq-hero h1 {
+	margin: 0;
+	color: #fff !important;
+	font-size: clamp(32px, 4vw, 48px);
+	line-height: 1.1;
+}
+
+body #content .bbq-hero__lead {
+	max-width: 540px;
+	margin: 22px 0 30px;
+	color: #fff !important;
+	font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+	line-height: 1.6;
+}
+
+body #content .bbq-hero .bbq-hero__button {
+	display: inline-flex;
+	min-height: 50px;
+	align-items: center;
+	justify-content: center;
+	padding: 13px 23px;
+	border: 1px solid var(--bbq-gold);
+	border-radius: 4px;
+	background: var(--bbq-gold);
+	color: #171614 !important;
+	font-weight: 700;
+	text-decoration: none;
+	transition: background-color 160ms ease, color 160ms ease;
+}
+
+body #content .bbq-hero .bbq-hero__button:hover,
+body #content .bbq-hero .bbq-hero__button:focus-visible {
+	background: transparent;
+	color: #fff !important;
+}
+
+.bbq-home__content {
+	width: min(100% - 48px, 1240px);
+	margin-inline: auto;
+	padding-block: clamp(40px, 6vw, 80px);
+}
+
+@media (max-width: 640px) {
+	.bbq-hero {
+		min-height: 540px;
+		padding-inline: 24px;
+	}
+
+	.bbq-hero__image {
+		object-position: 58% center;
+	}
+
+	.bbq-home__content {
+		width: calc(100% - 48px);
+	}
+}
