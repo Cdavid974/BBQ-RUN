@@ -6,3 +6,8 @@ Template: astra
 Version: 1.0.0
 Text Domain: bbq-run
 */
+/*Test d'héritage 
+body {
+    border-top: 8px solid red;
+}
+*/
