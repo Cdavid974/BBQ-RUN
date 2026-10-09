@@ -14,10 +14,6 @@
 	--bbq-content-width: 75ch;
 	--bbq-page-gutter: 24px;
 	--bbq-page-margin: 56px;
-	--e-global-color-primary: var(--bbq-black);
-	--e-global-color-secondary: var(--bbq-bronze);
-	--e-global-color-text: var(--bbq-black);
-	--e-global-color-accent: var(--bbq-gold);
 	--ast-global-color-0: var(--bbq-black);
 	--ast-global-color-1: var(--bbq-bronze);
 	--ast-global-color-2: var(--bbq-black);
@@ -30,10 +26,6 @@
 }
 
 body {
-	--e-global-color-primary: var(--bbq-black);
-	--e-global-color-secondary: var(--bbq-bronze);
-	--e-global-color-text: var(--bbq-black);
-	--e-global-color-accent: var(--bbq-gold);
 	--ast-global-color-0: var(--bbq-black);
 	--ast-global-color-1: var(--bbq-bronze);
 	--ast-global-color-2: var(--bbq-black);
@@ -45,84 +37,88 @@ body {
 	--ast-global-color-8: var(--bbq-bronze);
 	color: var(--bbq-black) !important;
 	background-color: var(--bbq-white) !important;
-	font-family: 'Roboto', sans-serif !important;
+	font-family: 'Roboto', sans-serif;
 	font-size: 18px;
 	font-weight: 400;
 	line-height: 27px;
 	text-align: left;
 }
 
-body[class*='elementor-kit'] {
-	--e-global-color-primary: var(--bbq-black);
-	--e-global-color-secondary: var(--bbq-bronze);
-	--e-global-color-text: var(--bbq-black);
-	--e-global-color-accent: var(--bbq-gold);
-}
-
-body #content :is(p, .entry-content p) {
+body #content :is(p, .entry-content p):where(:not(.elementor, .elementor *)) {
 	max-width: var(--bbq-content-width);
 	font-size: 18px;
 	line-height: 27px;
 }
 
-body #content :is(h1, h2, h3, h4, h5, h6, .elementor-heading-title) {
+:where(body #content) :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title):where(:not(.elementor, .elementor *)) {
+	font-family: 'Montserrat', sans-serif;
+}
+
+body #content :is(h1, h2, h3, h4, h5, h6, .elementor-heading-title):where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-black) !important;
-	font-family: 'Montserrat', sans-serif !important;
 	font-weight: 600;
 	letter-spacing: -0.02em;
 	line-height: 1.2;
 	text-align: left;
 }
 
-body #content :is(h1, .elementor-widget-heading h1.elementor-heading-title) {
+body #content :is(h1, .elementor-widget-heading h1.elementor-heading-title):where(:not(.elementor, .elementor *)) {
 	font-size: 48px;
 	font-weight: 700;
 	line-height: 53px;
 }
 
-body #content :is(h2, .elementor-widget-heading h2.elementor-heading-title) {
+body #content :is(h2, .elementor-widget-heading h2.elementor-heading-title):where(:not(.elementor, .elementor *)) {
 	font-size: 32px;
 	line-height: 38px;
 }
 
-body #content :is(h3, .elementor-widget-heading h3.elementor-heading-title) {
+body #content :is(h3, .elementor-widget-heading h3.elementor-heading-title):where(:not(.elementor, .elementor *)) {
 	font-size: 24px;
 	line-height: 30px;
 }
 
-body #content :is(h4, h5, h6) {
+body #content :is(h4, h5, h6):where(:not(.elementor, .elementor *)) {
 	font-size: 18px;
 	line-height: 1.35;
 }
 
-body #content :is(li, .elementor-widget-text-editor) {
+body #content :is(li, .elementor-widget-text-editor):where(:not(.elementor, .elementor *)) {
 	font-size: 18px;
 	line-height: 27px;
 }
 
-body #content :is(small, figcaption, .wp-caption-text, .elementor-image-carousel-caption) {
+body #content :is(small, figcaption, .wp-caption-text, .elementor-image-carousel-caption):where(:not(.elementor, .elementor *)) {
 	font-size: 14px;
 	line-height: 20px;
 }
 
-body #content :is(a, .elementor a) {
+body #content :is(a, .elementor a):where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-bronze) !important;
 	text-decoration-thickness: 1px;
 	text-underline-offset: 0.18em;
 }
 
-body #content :is(a:hover, a:focus-visible, .elementor a:hover, .elementor a:focus-visible) {
+body #content :is(a:hover, a:focus-visible, .elementor a:hover, .elementor a:focus-visible):where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-black) !important;
 }
 
-body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next), input[type='button'], input[type='submit'], input[type='reset'], .button, .ast-button, .ast-custom-button, .elementor-button, .wp-block-button__link) {
+/* Les styles par défaut du thème restent surchargeables dans Elementor. */
+:where(body #content) :where(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next), input[type='button'], input[type='submit'], input[type='reset'], .button, .ast-button, .ast-custom-button, .elementor-button, .wp-block-button__link):where(:not(.elementor, .elementor *)) {
+	font-family: 'Roboto', sans-serif;
+}
+
+:where(body #content) :where(input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']), select, textarea):where(:not(.elementor, .elementor *)) {
+	font: 400 1rem/1.4 'Roboto', sans-serif;
+}
+
+body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next), input[type='button'], input[type='submit'], input[type='reset'], .button, .ast-button, .ast-custom-button, .elementor-button, .wp-block-button__link):where(:not(.elementor, .elementor *)) {
 	min-height: 44px;
 	padding: 12px 24px;
 	border: 1px solid var(--bbq-gold);
 	border-radius: 4px;
 	background: var(--bbq-gold);
 	color: var(--bbq-black) !important;
-	font-family: 'Roboto', sans-serif;
 	font-size: 16px;
 	font-weight: 700;
 	line-height: 1.25;
@@ -131,18 +127,18 @@ body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal)
 	transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
-body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next):hover, input[type='button']:hover, input[type='submit']:hover, input[type='reset']:hover, .button:hover, .ast-button:hover, .ast-custom-button:hover, .elementor-button:hover, .wp-block-button__link:hover) {
+body #content :is(button:not(.menu-toggle):not(.ast-mobile-menu-trigger-minimal):not(.slick-arrow):not(.swiper-button-prev):not(.swiper-button-next):hover, input[type='button']:hover, input[type='submit']:hover, input[type='reset']:hover, .button:hover, .ast-button:hover, .ast-custom-button:hover, .elementor-button:hover, .wp-block-button__link:hover):where(:not(.elementor, .elementor *)) {
 	border-color: var(--bbq-bronze);
 	background: var(--bbq-bronze);
 	color: var(--bbq-white) !important;
 }
 
-body #content :is(button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, .elementor-button:focus-visible, .wp-block-button__link:focus-visible) {
+body #content :is(button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, .elementor-button:focus-visible, .wp-block-button__link:focus-visible):where(:not(.elementor, .elementor *)) {
 	outline: 3px solid var(--bbq-gold);
 	outline-offset: 3px;
 }
 
-body #content :is(input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']), select, textarea) {
+body #content :is(input:not([type='button']):not([type='submit']):not([type='reset']):not([type='checkbox']):not([type='radio']), select, textarea):where(:not(.elementor, .elementor *)) {
 	max-width: 100%;
 	min-height: 44px;
 	padding: 10px 12px;
@@ -150,17 +146,16 @@ body #content :is(input:not([type='button']):not([type='submit']):not([type='res
 	border-radius: 4px;
 	background-color: var(--bbq-white) !important;
 	color: var(--bbq-black) !important;
-	font: 400 1rem/1.4 'Roboto', sans-serif;
 	box-shadow: none;
 }
 
-body #content input::placeholder,
-body #content textarea::placeholder {
+body #content input:where(:not(.elementor, .elementor *))::placeholder,
+body #content textarea:where(:not(.elementor, .elementor *))::placeholder {
 	color: var(--bbq-bronze);
 	opacity: 1;
 }
 
-body #content :is(hr, .elementor-divider-separator, .ast-separate-container .ast-article-post, .ast-separate-container .ast-article-single) {
+body #content :is(hr, .elementor-divider-separator, .ast-separate-container .ast-article-post, .ast-separate-container .ast-article-single):where(:not(.elementor, .elementor *)) {
 	border-color: var(--bbq-line);
 }
 
@@ -184,46 +179,46 @@ body.page.ast-no-sidebar #content #primary {
 }
 
 /* Optional section classes for deliberate brand-color panels in the builder. */
-.bbq-section-dark {
+.bbq-section-dark:where(:not(.elementor, .elementor *)) {
 	background-color: var(--bbq-black) !important;
 	color: var(--bbq-white) !important;
 }
 
-body #content .bbq-section-dark :is(h1, h2, h3, h4, h5, h6, p, li, strong, .elementor-heading-title) {
+body #content .bbq-section-dark :is(h1, h2, h3, h4, h5, h6, p, li, strong, .elementor-heading-title):where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-white) !important;
 }
 
-body #content .bbq-section-dark a {
+body #content .bbq-section-dark a:where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-gold) !important;
 }
 
-body #content .bbq-section-gold a {
+body #content .bbq-section-gold a:where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-black) !important;
 }
 
-.bbq-section-gold {
+.bbq-section-gold:where(:not(.elementor, .elementor *)) {
 	background-color: var(--bbq-gold) !important;
 	color: var(--bbq-black) !important;
 }
 
-.bbq-section-bronze {
+.bbq-section-bronze:where(:not(.elementor, .elementor *)) {
 	background-color: var(--bbq-bronze) !important;
 	color: var(--bbq-white) !important;
 }
 
-body #content .bbq-section-bronze :is(h1, h2, h3, h4, h5, h6, p, li, strong, .elementor-heading-title),
-body #content .bbq-section-bronze a {
+body #content .bbq-section-bronze :is(h1, h2, h3, h4, h5, h6, p, li, strong, .elementor-heading-title):where(:not(.elementor, .elementor *)),
+body #content .bbq-section-bronze a:where(:not(.elementor, .elementor *)) {
 	color: var(--bbq-white) !important;
 }
 
-body #content .bbq-section-dark :is(button, .elementor-button, .wp-block-button__link),
-body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-button__link) {
+body #content .bbq-section-dark :is(button, .elementor-button, .wp-block-button__link):where(:not(.elementor, .elementor *)),
+body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-button__link):where(:not(.elementor, .elementor *)) {
 	background-color: var(--bbq-gold);
 	color: var(--bbq-black) !important;
 }
 
-body #content .bbq-section-dark :is(button, .elementor-button, .wp-block-button__link):hover,
-body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-button__link):hover {
+body #content .bbq-section-dark :is(button, .elementor-button, .wp-block-button__link):hover:where(:not(.elementor, .elementor *)),
+body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-button__link):hover:where(:not(.elementor, .elementor *)) {
 	background-color: var(--bbq-bronze);
 	color: var(--bbq-white) !important;
 }
@@ -246,12 +241,12 @@ body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-butto
 		--bbq-page-margin: 24px;
 	}
 
-	body #content :is(h1, .elementor-widget-heading h1.elementor-heading-title) {
+	body #content :is(h1, .elementor-widget-heading h1.elementor-heading-title):where(:not(.elementor, .elementor *)) {
 		font-size: clamp(32px, 9vw, 40px);
 		line-height: 1.1;
 	}
 
-	body #content :is(h2, .elementor-widget-heading h2.elementor-heading-title) {
+	body #content :is(h2, .elementor-widget-heading h2.elementor-heading-title):where(:not(.elementor, .elementor *)) {
 		font-size: 28px;
 		line-height: 34px;
 	}
@@ -263,7 +258,7 @@ body #content .bbq-section-bronze :is(button, .elementor-button, .wp-block-butto
 }
 
 @media (prefers-reduced-motion: reduce) {
-	body #content :is(button, .button, .ast-button, .elementor-button, .wp-block-button__link) {
+	body #content :is(button, .button, .ast-button, .elementor-button, .wp-block-button__link):where(:not(.elementor, .elementor *)) {
 		transition: none;
 	}
 }

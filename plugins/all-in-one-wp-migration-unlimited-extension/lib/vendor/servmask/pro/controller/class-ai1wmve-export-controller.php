@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -30,6 +32,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'Ai1wmve_Export_Controller' ) ) {
 
 	class Ai1wmve_Export_Controller {
+
+		public static function compression_types() {
+			Ai1wm_Template::render(
+				'export/compression-types',
+				array(),
+				AI1WMVE_TEMPLATES_PATH
+			);
+		}
 
 		public static function inactive_themes() {
 			Ai1wm_Template::render(
@@ -56,20 +66,37 @@ if ( ! class_exists( 'Ai1wmve_Export_Controller' ) ) {
 		}
 
 		public static function exclude_db_tables() {
-			$mysql = Ai1wm_Database_Utility::create_client();
+			$mysql = Ai1wm_Database_Utility::get_client();
 
 			// Include table prefixes
 			if ( ai1wm_table_prefix() ) {
 				$mysql->add_table_prefix_filter( ai1wm_table_prefix() );
 
-				// Include table prefixes (Webba Booking)
-				foreach ( array( 'wbk_services', 'wbk_days_on_off', 'wbk_locked_time_slots', 'wbk_appointments', 'wbk_cancelled_appointments', 'wbk_email_templates', 'wbk_service_categories', 'wbk_gg_calendars', 'wbk_coupons' ) as $table_name ) {
+				// Include table prefixes (Webba Booking and CiviCRM)
+				foreach ( array( 'wbk_', 'civicrm_' ) as $table_name ) {
 					$mysql->add_table_prefix_filter( $table_name );
 				}
 			}
 
 			Ai1wm_Template::render(
 				'export/exclude-db-tables',
+				array( 'tables' => $mysql->get_tables() ),
+				AI1WMVE_TEMPLATES_PATH
+			);
+		}
+
+		public static function include_db_tables() {
+			$mysql = Ai1wm_Database_Utility::get_client();
+
+			// Exclude default wp table prefix
+			if ( ai1wm_table_prefix() ) {
+				$mysql->add_table_prefix_filter( '', sprintf( '(%s|%s|%s)', ai1wm_table_prefix(), 'wbk_', 'civicrm_' ) );
+			} else {
+				$mysql->add_table_prefix_filter( '', sprintf( '(%s|%s)', 'wbk_', 'civicrm_' ) );
+			}
+
+			Ai1wm_Template::render(
+				'export/include-db-tables',
 				array( 'tables' => $mysql->get_tables() ),
 				AI1WMVE_TEMPLATES_PATH
 			);

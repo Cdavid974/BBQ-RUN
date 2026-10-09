@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -36,9 +38,10 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 		const TYPE_EXPORT = 'Export';
 		const TYPE_IMPORT = 'Import';
 
-		const LAST_RUN_NONE    = 'None';
-		const LAST_RUN_FAILED  = 'Failed';
-		const LAST_RUN_SUCCESS = 'Success';
+		const LAST_STATUS_NONE    = 'None';
+		const LAST_STATUS_FAILED  = 'Failed';
+		const LAST_STATUS_SUCCESS = 'Success';
+		const LAST_STATUS_RUNNING = 'Running';
 
 		const INTERVAL_HOURLY  = 'Hourly';
 		const INTERVAL_DAILY   = 'Daily';
@@ -50,6 +53,7 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 		const REMINDER_NONE    = 'Off';
 		const REMINDER_SUCCESS = 'Success';
 		const REMINDER_FAILED  = 'Failed';
+		const REMINDER_ALWAYS  = 'Always';
 
 		const CRON_HOOK = 'ai1wmve_schedule_event';
 
@@ -88,6 +92,10 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 
 		protected $excluded_db_tables;
 
+		protected $included_db_tables;
+
+		protected $compression_type;
+
 		protected $password;
 
 		protected $incremental = false;
@@ -103,7 +111,7 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 
 		public function __construct( $data ) {
 			if ( ! is_array( $data ) ) {
-				throw new Ai1wmve_Schedules_Exception( __( 'Event data must be array', AI1WM_PLUGIN_NAME ) );
+				throw new Ai1wmve_Schedules_Exception( esc_html__( 'Event data must be array', AI1WM_PLUGIN_NAME ) );
 			}
 
 			if ( empty( $data['event_id'] ) ) {
@@ -200,6 +208,8 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 				'notification'       => $this->notification,
 				'excluded_files'     => $this->excluded_files,
 				'excluded_db_tables' => $this->excluded_db_tables,
+				'included_db_tables' => $this->included_db_tables,
+				'compression_type'   => $this->compression_type,
 				'password'           => $this->password(),
 				'incremental'        => $this->incremental,
 				'sites'              => array_map( 'intval', $this->sites ),
@@ -321,7 +331,7 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 					return 'monthly';
 
 				default:
-					throw new Ai1wmve_Schedules_Exception( __( 'Undefined schedule interval!', AI1WM_PLUGIN_NAME ) );
+					throw new Ai1wmve_Schedules_Exception( esc_html__( 'Undefined schedule interval!', AI1WM_PLUGIN_NAME ) );
 			}
 		}
 
@@ -330,19 +340,28 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 		}
 
 		public function mark_success( $params = null ) {
-			$this->last_run( self::LAST_RUN_SUCCESS );
+			$this->last_run( self::LAST_STATUS_SUCCESS );
 
 			$log = new Ai1wmve_Schedule_Event_Log( $this->event_id );
-			$log->add( self::LAST_RUN_SUCCESS );
+			$log->add( self::LAST_STATUS_SUCCESS );
 
 			$this->notify_success( $params );
 		}
 
-		public function mark_failed( $message = null ) {
-			$this->last_run( self::LAST_RUN_FAILED );
+		public function mark_running( $params = null ) {
+			$this->last_run( self::LAST_STATUS_RUNNING );
 
 			$log = new Ai1wmve_Schedule_Event_Log( $this->event_id );
-			$log->add( self::LAST_RUN_FAILED, $message );
+			$log->add( self::LAST_STATUS_RUNNING );
+
+			$this->notify_running( $params );
+		}
+
+		public function mark_failed( $message = null ) {
+			$this->last_run( self::LAST_STATUS_FAILED );
+
+			$log = new Ai1wmve_Schedule_Event_Log( $this->event_id );
+			$log->add( self::LAST_STATUS_FAILED, $message );
 
 			$this->notify_failed( $message );
 		}
@@ -353,7 +372,7 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 				return update_option( $option_key, $status );
 			}
 
-			return get_option( $option_key, self::LAST_RUN_NONE );
+			return get_option( $option_key, self::LAST_STATUS_NONE );
 		}
 
 		protected function notify_success( $params ) {
@@ -380,6 +399,8 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 			);
 		}
 
+		protected function notify_running( $params ) {
+		}
 
 		protected function notify_failed( $error ) {
 			add_filter( 'ai1wm_notification_error_toggle', array( $this, 'is_failed_notification_enabled' ) );
@@ -399,11 +420,11 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 		}
 
 		public function is_success_notification_enabled() {
-			return $this->notification['reminder'] === static::REMINDER_SUCCESS && $this->notification['status'] === static::STATUS_ENABLED;
+			return $this->notification['status'] === static::STATUS_ENABLED && ( $this->notification['reminder'] === static::REMINDER_SUCCESS || $this->notification['reminder'] === static::REMINDER_ALWAYS );
 		}
 
 		public function is_failed_notification_enabled() {
-			return $this->notification['reminder'] === static::REMINDER_FAILED && $this->notification['status'] === static::STATUS_ENABLED;
+			return $this->notification['status'] === static::STATUS_ENABLED && ( $this->notification['reminder'] === static::REMINDER_FAILED || $this->notification['reminder'] === static::REMINDER_ALWAYS );
 		}
 
 		public function notification_email() {
@@ -430,7 +451,7 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 			);
 		}
 
-		public function delete_data() {
+		public function delete_logs() {
 			delete_option( self::option_key( 'last_run', $this->event_id ) );
 			delete_option( self::option_key( 'log', $this->event_id ) );
 		}
@@ -471,6 +492,15 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 				$params['excluded_db_tables']           = $this->excluded_db_tables;
 			}
 
+			if ( ! empty( $this->included_db_tables ) ) {
+				$params['options']['include_db_tables'] = 1;
+				$params['included_db_tables']           = $this->included_db_tables;
+			}
+
+			if ( ! empty( $this->compression_type ) ) {
+				$params['options']['compression_type'] = $this->compression_type;
+			}
+
 			if ( $this->incremental ) {
 				$params['incremental'] = 1;
 			}
@@ -494,11 +524,7 @@ if ( ! class_exists( 'Ai1wmve_Schedule_Event' ) ) {
 		 * @return string
 		 */
 		protected function archive( $blog_id = null ) {
-			return str_replace(
-				'.wpress',
-				sprintf( '-%s.wpress', $this->event_id ),
-				ai1wm_archive_file( $blog_id )
-			);
+			return str_replace( '.wpress', sprintf( '-%s.wpress', $this->event_id ), ai1wm_archive_file( $blog_id ) );
 		}
 	}
 }

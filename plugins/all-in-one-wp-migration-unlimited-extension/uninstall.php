@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2020 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
+ *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
  * ███████╗█████╗  ██████╔╝██║   ██║██╔████╔██║███████║███████╗█████╔╝
@@ -27,19 +29,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
 
-// Include plugin bootstrap file
-require_once dirname( __FILE__ ) .
-	DIRECTORY_SEPARATOR .
-	'all-in-one-wp-migration-unlimited-extension.php';
-
 /**
  * Trigger Uninstall process only if WP_UNINSTALL_PLUGIN is defined
  */
 if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	global $wpdb, $wp_filesystem;
+	global $wpdb;
+
+	// Reset cron schedules
+	if ( ( $cron = get_option( 'cron', array() ) ) ) {
+		foreach ( $cron as $timestamp => $hooks ) {
+			foreach ( $hooks as $key => $value ) {
+				if ( strpos( $key, 'ai1wmue_' ) === 0 ) {
+					unset( $cron[ $timestamp ][ $key ] );
+				}
+			}
+		}
+
+		update_option( 'cron', $cron );
+	}
 
 	// Delete any options or other data stored in the database here
-	delete_option( 'ai1wmue_backups' );
-	delete_option( 'ai1wmue_total' );
-	delete_option( 'ai1wmue_days' );
+	$wpdb->query( "DELETE FROM `{$wpdb->options}` WHERE `option_name` LIKE 'ai1wmue\_%'" );
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -40,7 +42,7 @@ class Ai1wmve_Reset_Init {
 
 		// Check if password is provided
 		if ( ! isset( $params['ai1wm_reset_password'] ) ) {
-			throw new Ai1wmve_Error_Exception( __( 'To start the reset process, please enter current user password.', AI1WM_PLUGIN_NAME ) );
+			throw new Ai1wmve_Error_Exception( esc_html__( 'To start the reset process, please enter current user password.', AI1WM_PLUGIN_NAME ) );
 		}
 
 		$user = wp_get_current_user();
@@ -57,6 +59,6 @@ class Ai1wmve_Reset_Init {
 			}
 		}
 
-		throw new Ai1wmve_Error_Exception( __( 'The entered password is not valid. Please ensure you\'re entering the correct password. It\'s essential for security reasons to verify your identity before making significant changes to your site.', AI1WM_PLUGIN_NAME ) );
+		throw new Ai1wmve_Error_Exception( esc_html__( 'The entered password is not valid. Please ensure you\'re entering the correct password. It\'s essential for security reasons to verify your identity before making significant changes to your site.', AI1WM_PLUGIN_NAME ) );
 	}
 }

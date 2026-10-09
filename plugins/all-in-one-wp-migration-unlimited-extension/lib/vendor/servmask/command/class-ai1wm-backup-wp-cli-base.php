@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -88,20 +90,33 @@ if ( defined( 'WP_CLI' ) && ! class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) ) {
 			);
 
 			if ( isset( $assoc_args['password'] ) ) {
-				if ( function_exists( 'ai1wm_can_encrypt' ) && ai1wm_can_encrypt() ) {
-					if ( $assoc_args['password'] === true || empty( $assoc_args['password'] ) ) {
-						$assoc_args['password'] = readline( 'Please enter a password to protect this backup: ' );
-					}
-
-					if ( empty( $assoc_args['password'] ) ) {
-						WP_CLI::error( __( 'Encryption password must not be empty.', AI1WM_PLUGIN_NAME ) );
-					}
-
-					$params['options']['encrypt_backups']  = true;
-					$params['options']['encrypt_password'] = $assoc_args['password'];
-				} else {
+				if ( ! ai1wm_can_encrypt() ) {
 					WP_CLI::error( __( 'Your system doesn\'t support encryption.', AI1WM_PLUGIN_NAME ) );
 				}
+
+				if ( is_bool( $assoc_args['password'] ) || empty( $assoc_args['password'] ) ) {
+					$assoc_args['password'] = readline( 'Please enter a password to protect this backup: ' );
+				}
+
+				if ( empty( $assoc_args['password'] ) ) {
+					WP_CLI::error( __( 'Encryption password must not be empty.', AI1WM_PLUGIN_NAME ) );
+				}
+
+				$params['options']['encrypt_backups']  = true;
+				$params['options']['encrypt_password'] = $assoc_args['password'];
+			}
+
+			if ( isset( $assoc_args['compression'] ) ) {
+				if ( is_bool( $assoc_args['compression'] ) || empty( $assoc_args['compression'] ) ) {
+					$assoc_args['compression'] = readline( 'Please enter a compression type to archive this backup (gzip or bzip2): ' );
+				}
+
+				if ( ! ai1wm_has_compression_type( $assoc_args['compression'] ) ) {
+					WP_CLI::error( sprintf( __( 'Your system doesn\'t support %s compression.', AI1WM_PLUGIN_NAME ), $assoc_args['compression'] ) );
+					exit;
+				}
+
+				$params['options']['compression_type'] = strtolower( $assoc_args['compression'] );
 			}
 
 			if ( isset( $assoc_args['exclude-spam-comments'] ) ) {
@@ -140,65 +155,153 @@ if ( defined( 'WP_CLI' ) && ! class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) ) {
 				$params['options']['no_cache'] = true;
 			}
 
-			if ( isset( $assoc_args['exclude-database'] ) ) {
-				$params['options']['no_database'] = true;
-			} elseif ( isset( $assoc_args['exclude-tables'] ) ) {
-				$mysql = Ai1wm_Database_Utility::create_client();
+			if ( isset( $assoc_args['exclude-files'] ) ) {
+				$excluded_files = array();
 
-				// Include table prefixes
-				if ( ai1wm_table_prefix() ) {
-					$mysql->add_table_prefix_filter( ai1wm_table_prefix() );
-
-					// Include table prefixes (Webba Booking)
-					foreach ( array( 'wbk_services', 'wbk_days_on_off', 'wbk_locked_time_slots', 'wbk_appointments', 'wbk_cancelled_appointments', 'wbk_email_templates', 'wbk_service_categories', 'wbk_gg_calendars', 'wbk_coupons' ) as $table_name ) {
-						$mysql->add_table_prefix_filter( $table_name );
-					}
-				}
-				$all_tables = $mysql->get_tables();
-
-				if ( $assoc_args['exclude-tables'] === true || empty( $assoc_args['exclude-tables'] ) ) {
-					$tables = new cli\Table;
-
-					$tables->setHeaders(
-						array(
-							'name' => sprintf( 'Tables (%s)', DB_NAME ),
-						)
-					);
-
-					foreach ( $all_tables as $table_name ) {
-						$tables->addRow(
-							array(
-								'name' => $table_name,
-							)
-						);
-					}
-
-					$tables->display();
-					$excluded_tables = array();
-
-					while ( $table = trim( readline( 'Enter table name to exclude from backup (q=quit, empty=continue): ' ) ) ) {
-						switch ( $table ) {
+				// Prompt for files to exclude
+				if ( $assoc_args['exclude-files'] === true || empty( $assoc_args['exclude-files'] ) ) {
+					while ( $file = trim( readline( 'Enter file or folder path relative to wp-content to exclude from backup (q=quit, empty=continue): ' ) ) ) {
+						switch ( $file ) {
 							case 'q':
 								exit;
 
 							default:
-								if ( ! in_array( $table, $all_tables ) ) {
-									WP_CLI::warning( __( 'Unknown table: ', AI1WM_PLUGIN_NAME ) . $table );
+								if ( ! file_exists( WP_CONTENT_DIR . DIRECTORY_SEPARATOR . untrailingslashit( $file ) ) ) {
+									WP_CLI::warning( __( 'Unknown file or folder: ', AI1WM_PLUGIN_NAME ) . $file );
 									break;
 								}
-								$excluded_tables[] = $table;
+								$excluded_files[] = $file;
 						}
 					}
 				} else {
-					$excluded_tables = array_intersect(
-						$all_tables,
-						array_filter( array_map( 'trim', explode( ',', $assoc_args['exclude-tables'] ) ) )
-					);
+					$excluded_files = array_filter( array_map( 'trim', explode( ',', $assoc_args['exclude-files'] ) ) );
 				}
 
-				if ( ! empty( $excluded_tables ) ) {
-					$params['options']['exclude_db_tables'] = true;
-					$params['excluded_db_tables']           = implode( ',', $excluded_tables );
+				if ( ! empty( $excluded_files ) ) {
+					$params['options']['exclude_files'] = true;
+					$params['excluded_files']           = implode( ',', $excluded_files );
+				}
+			}
+
+			if ( isset( $assoc_args['exclude-database'] ) ) {
+				$params['options']['no_database'] = true;
+			} else {
+				// Exclude some of the tables
+				if ( isset( $assoc_args['exclude-tables'] ) ) {
+					$mysql = Ai1wm_Database_Utility::get_client();
+
+					// Include table prefixes
+					if ( ai1wm_table_prefix() ) {
+						$mysql->add_table_prefix_filter( ai1wm_table_prefix() );
+
+						// Include table prefixes (Webba Booking and CiviCRM)
+						foreach ( array( 'wbk_', 'civicrm_' ) as $table_name ) {
+							$mysql->add_table_prefix_filter( $table_name );
+						}
+					}
+					$all_tables = $mysql->get_tables();
+
+					if ( $assoc_args['exclude-tables'] === true || empty( $assoc_args['exclude-tables'] ) ) {
+						$tables = new cli\Table();
+
+						$tables->setHeaders(
+							array(
+								'name' => sprintf( 'Tables to exclude (%s)', DB_NAME ),
+							)
+						);
+
+						foreach ( $all_tables as $table_name ) {
+							$tables->addRow(
+								array(
+									'name' => $table_name,
+								)
+							);
+						}
+
+						$tables->display();
+						$excluded_tables = array();
+
+						while ( $table = trim( readline( 'Enter table name to exclude from backup (q=quit, empty=continue): ' ) ) ) {
+							switch ( $table ) {
+								case 'q':
+									exit;
+
+								default:
+									if ( ! in_array( $table, $all_tables ) ) {
+										WP_CLI::warning( __( 'Unknown table: ', AI1WM_PLUGIN_NAME ) . $table );
+										break;
+									}
+									$excluded_tables[] = $table;
+							}
+						}
+					} else {
+						$excluded_tables = array_intersect(
+							$all_tables,
+							array_filter( array_map( 'trim', explode( ',', $assoc_args['exclude-tables'] ) ) )
+						);
+					}
+
+					if ( ! empty( $excluded_tables ) ) {
+						$params['options']['exclude_db_tables'] = true;
+						$params['excluded_db_tables']           = implode( ',', $excluded_tables );
+					}
+				}
+
+				// Include additional tables
+				if ( isset( $assoc_args['include-tables'] ) ) {
+					$mysql = Ai1wm_Database_Utility::get_client();
+
+					// Include table prefixes
+					if ( ai1wm_table_prefix() ) {
+						$mysql->add_table_prefix_filter( '', sprintf( '(%s|%s|%s)', ai1wm_table_prefix(), 'wbk_', 'civicrm_' ) );
+					} else {
+						$mysql->add_table_prefix_filter( '', sprintf( '(%s|%s)', 'wbk_', 'civicrm_' ) );
+					}
+
+					if ( $assoc_args['include-tables'] === true || empty( $assoc_args['include-tables'] ) ) {
+						$tables = new cli\Table();
+
+						$tables->setHeaders(
+							array(
+								'name' => sprintf( 'Tables to include (%s)', DB_NAME ),
+							)
+						);
+
+						foreach ( $mysql->get_tables() as $table_name ) {
+							$tables->addRow(
+								array(
+									'name' => $table_name,
+								)
+							);
+						}
+
+						$tables->display();
+						$included_tables = array();
+
+						while ( $table = trim( readline( 'Enter table name to include in backup (q=quit, empty=continue): ' ) ) ) {
+							switch ( $table ) {
+								case 'q':
+									exit;
+
+								default:
+									if ( ! in_array( $table, $all_tables ) ) {
+										WP_CLI::warning( __( 'Unknown table: ', AI1WM_PLUGIN_NAME ) . $table );
+										break;
+									}
+									$included_tables[] = $table;
+							}
+						}
+					} else {
+						$included_tables = array_intersect(
+							$all_tables,
+							array_filter( array_map( 'trim', explode( ',', $assoc_args['include-tables'] ) ) )
+						);
+					}
+
+					if ( ! empty( $included_tables ) ) {
+						$params['options']['include_db_tables'] = true;
+						$params['included_db_tables']           = implode( ',', $included_tables );
+					}
 				}
 			}
 

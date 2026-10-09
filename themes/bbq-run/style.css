@@ -44,13 +44,16 @@ body {
 	font-display: swap;
 }
 
-/* Applique les polices locales au contenu sans toucher aux icônes. */
-body,
-body #content :where(p, a, li, dt, dd, blockquote, figcaption, label, legend, small, strong, em, b, span, div, button, input, select, textarea, option, summary, time, address, td, th, .elementor-heading-title, .elementor-button, .elementor-icon-list-text, .elementor-nav-menu--main .elementor-item) {
+/* Polices par défaut, laissées surchargeables par les réglages Elementor. */
+body {
 	font-family: 'Roboto', sans-serif;
 }
 
-body #content :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title),
-body #content :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title) :where(a, span, strong, em, b, small) {
+:where(body #content) :where(p, a, li, dt, dd, blockquote, figcaption, label, legend, small, strong, em, b, span, div, button, input, select, textarea, option, summary, time, address, td, th, .elementor-heading-title, .elementor-button, .elementor-icon-list-text, .elementor-nav-menu--main .elementor-item):where(:not(.elementor, .elementor *)) {
+	font-family: 'Roboto', sans-serif;
+}
+
+:where(body #content) :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title):where(:not(.elementor, .elementor *)),
+:where(body #content) :where(h1, h2, h3, h4, h5, h6, .elementor-heading-title):where(:not(.elementor, .elementor *)) :where(a, span, strong, em, b, small):where(:not(.elementor, .elementor *)) {
 	font-family: 'Montserrat', sans-serif;
 }

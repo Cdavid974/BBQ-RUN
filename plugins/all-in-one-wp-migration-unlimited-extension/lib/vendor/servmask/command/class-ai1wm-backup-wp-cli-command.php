@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -50,6 +52,9 @@ if ( class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) && ! class_exists( 'Ai1wm_Backup
 		 * [--password[=<password>]]
 		 * : Encrypt backup with password
 		 *
+		 * [--compression[=<type>]]
+		 * : Compress backup with the specified type: gzip or bzip2
+		 *
 		 * [--exclude-spam-comments]
 		 * : Do not export spam comments
 		 *
@@ -77,11 +82,17 @@ if ( class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) && ! class_exists( 'Ai1wm_Backup
 		 * [--exclude-cache]
 		 * : Do not export cache (files)
 		 *
+		 * [--exclude-files[=<comma_separated_paths>]]
+		 * : Do not export the selected files or folders (paths relative to wp-content, e.g. uploads/large-folder,plugins/some-plugin)
+		 *
 		 * [--exclude-database]
 		 * : Do not export database (sql)
 		 *
 		 * [--exclude-tables[=<comma_separated_names>]]
 		 * : Do not export selected database tables (sql)
+		 *
+		 * [--include-tables[=<comma_separated_names>]]
+		 * : Include the selected non‑WP tables (sql)
 		 *
 		 * [--exclude-email-replace]
 		 * : Do not replace email domain (sql)
@@ -131,7 +142,7 @@ if ( class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) && ! class_exists( 'Ai1wm_Backup
 		 * @subcommand list-backups
 		 */
 		public function list_backups( array $args, array $assoc_args ) {
-			$backups = new cli\Table;
+			$backups = new cli\Table();
 
 			$backups->setHeaders(
 				array(
@@ -141,7 +152,7 @@ if ( class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) && ! class_exists( 'Ai1wm_Backup
 				)
 			);
 
-			$model = new Ai1wm_Backups;
+			$model = new Ai1wm_Backups();
 			foreach ( $model->get_files() as $backup ) {
 				$backups->addRow(
 					array(
@@ -216,7 +227,7 @@ if ( class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) && ! class_exists( 'Ai1wm_Backup
 				// Disable completed timeout
 				add_filter( 'ai1wm_completed_timeout', '__return_zero' );
 
-				$table = new cli\Table;
+				$table = new cli\Table();
 
 				$table->setHeaders(
 					array(
@@ -441,7 +452,7 @@ if ( class_exists( 'Ai1wm_Backup_WP_CLI_Base' ) && ! class_exists( 'Ai1wm_Backup
 				exit;
 			}
 
-			if ( ! current_user_can( 'export' ) ) {
+			if ( ! current_user_can( 'ai1wm_export_site' ) ) {
 				WP_CLI::error( __( 'Insufficient permissions to run reset.', AI1WM_PLUGIN_NAME ) );
 			}
 

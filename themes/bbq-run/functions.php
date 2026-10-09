@@ -5,6 +5,18 @@ require_once get_stylesheet_directory() . '/inc/elementor-compat.php';
 
 /** Affiche le gabarit d'accueil même si son format Elementor est pleine largeur. */
 function bbq_run_front_page_template( $template ) {
+	// Laisser Elementor choisir son gabarit dans l’éditeur et son aperçu.
+	if ( class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance ) {
+		$elementor = \Elementor\Plugin::$instance;
+
+		if (
+			( isset( $elementor->preview ) && method_exists( $elementor->preview, 'is_preview_mode' ) && $elementor->preview->is_preview_mode() ) ||
+			( isset( $elementor->editor ) && method_exists( $elementor->editor, 'is_edit_mode' ) && $elementor->editor->is_edit_mode() )
+		) {
+			return $template;
+		}
+	}
+
 	if ( is_front_page() && ! is_home() ) {
 		return get_stylesheet_directory() . '/front-page.php';
 	}
@@ -84,6 +96,26 @@ function bbq_run_register_menus() {
 }
 add_action( 'after_setup_theme', 'bbq_run_register_menus', 20 );
 
+/** Identifiants des pages de test à garder hors des navigations publiques. */
+function bbq_run_test_page_ids() {
+	return array( 44 );
+}
+
+/** Retire les pages de test des menus WordPress, quel que soit leur emplacement. */
+function bbq_run_exclude_test_pages_from_menus( $items ) {
+	$bbq_test_page_ids = bbq_run_test_page_ids();
+
+	return array_values(
+		array_filter(
+			$items,
+			static function ( $item ) use ( $bbq_test_page_ids ) {
+				return ! ( isset( $item->object, $item->object_id ) && 'page' === $item->object && in_array( (int) $item->object_id, $bbq_test_page_ids, true ) );
+			}
+		)
+	);
+}
+add_filter( 'wp_nav_menu_objects', 'bbq_run_exclude_test_pages_from_menus' );
+
 /**
  * Fournit une navigation de secours quand aucun menu principal n'est attribué.
  * Les liens vers la boutique et les pages ne sont ajoutés que s'ils existent.
@@ -105,6 +137,7 @@ function bbq_run_primary_menu_fallback( $args ) {
 		array(
 			'sort_column' => 'menu_order,post_title',
 			'number'      => 5,
+			'exclude'     => bbq_run_test_page_ids(),
 		)
 	);
 	foreach ( $bbq_pages as $bbq_page ) {
@@ -133,6 +166,7 @@ function bbq_run_footer_menu_fallback( $args ) {
 		array(
 			'sort_column' => 'menu_order,post_title',
 			'number'      => 6,
+			'exclude'     => bbq_run_test_page_ids(),
 		)
 	);
 	$bbq_links = array();
@@ -166,6 +200,5 @@ function bbq_run_add_shop_to_primary_menu( $items, $args ) {
 }
 add_filter( 'wp_nav_menu_items', 'bbq_run_add_shop_to_primary_menu', 10, 2 );
 
-/** Empêche Astra et Elementor de charger les polices Google depuis un serveur distant. */
+/** Astra garde les polices locales ; Elementor peut charger les polices choisies dans ses widgets. */
 add_filter( 'astra_google_fonts', '__return_empty_array' );
-add_filter( 'elementor/frontend/print_google_fonts', '__return_false' );

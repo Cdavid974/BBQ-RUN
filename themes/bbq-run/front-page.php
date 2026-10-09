@@ -62,7 +62,11 @@ if ( ! $bbq_home_cta_url ) {
 
 		<?php while ( have_posts() ) : ?>
 			<?php the_post(); ?>
-			<?php if ( trim( get_the_content() ) ) : ?>
+			<?php
+			// Elementor doit trouver the_content() même lorsque la page est encore vide.
+			$bbq_home_preview = class_exists( '\Elementor\Plugin' ) && \Elementor\Plugin::$instance->preview->is_preview_mode();
+			?>
+			<?php if ( $bbq_home_preview || trim( get_the_content() ) ) : ?>
 				<section class="bbq-home__content">
 					<div class="entry-content">
 						<?php the_content(); ?>

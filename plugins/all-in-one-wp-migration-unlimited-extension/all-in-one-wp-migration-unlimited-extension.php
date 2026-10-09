@@ -5,12 +5,13 @@
  * Description: Extension for All-in-One WP Migration that enables unlimited size exports and imports
  * Author: ServMask
  * Author URI: https://servmask.com/
- * Version: 2.65
+ * Version: 2.88
  * Text Domain: all-in-one-wp-migration-unlimited-extension
  * Domain Path: /languages
  * Network: True
+ * License: GPLv3
  *
- * Copyright (C) 2014-2020 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +25,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -48,22 +51,75 @@ if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && ( $_SERVER['HTTP_X_FORWARDED
 }
 
 // Plugin Basename
-define( 'AI1WMUE_PLUGIN_BASENAME', basename( dirname( __FILE__ ) ) . '/' . basename( __FILE__ ) );
+define( 'AI1WMUE_PLUGIN_BASENAME', basename( __DIR__ ) . '/' . basename( __FILE__ ) );
 
 // Plugin Path
-define( 'AI1WMUE_PATH', dirname( __FILE__ ) );
+define( 'AI1WMUE_PATH', __DIR__ );
 
 // Plugin URL
 define( 'AI1WMUE_URL', plugins_url( '', AI1WMUE_PLUGIN_BASENAME ) );
 
 // Include constants
-require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'constants.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'constants.php';
 
 // Include functions
-require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'functions.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'functions.php';
 
 // Include loader
-require_once dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'loader.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'loader.php';
+
+// Register activation hook to install and activate base plugin if needed
+register_activation_hook( __FILE__, 'ai1wmue_activate_plugin' );
+
+/**
+ * Plugin activation hook
+ *
+ * @return void
+ */
+function ai1wmue_activate_plugin() {
+	// Check if the base plugin is installed
+	if ( ! ai1wmue_is_base_plugin_installed() ) {
+		// Install the base plugin
+		$install_result = ai1wmue_install_base_plugin();
+
+		if ( is_wp_error( $install_result ) ) {
+			// Installation failed, deactivate this plugin
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+			wp_die(
+				wp_kses(
+					sprintf(
+						__( 'The All-in-One WP Migration plugin could not be installed automatically. Please <a href="%s" target="_blank">download and install it manually</a> before activating this extension.', AI1WMUE_PLUGIN_NAME ),
+						esc_url( 'https://wordpress.org/plugins/all-in-one-wp-migration/' )
+					),
+					ai1wmue_allowed_html_tags()
+				)
+			);
+		}
+	}
+
+	// Activate the base plugin if it's not already active
+	if ( ! ai1wmue_is_base_plugin_active() ) {
+		if ( ! function_exists( 'activate_plugin' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$activate_result = activate_plugin( 'all-in-one-wp-migration/all-in-one-wp-migration.php' );
+
+		if ( is_wp_error( $activate_result ) ) {
+			// Activation failed, deactivate this plugin
+			deactivate_plugins( plugin_basename( __FILE__ ) );
+			wp_die(
+				wp_kses(
+					sprintf(
+						__( 'The All-in-One WP Migration plugin could not be activated automatically. Please <a href="%s">activate it manually</a> before activating this extension.', AI1WMUE_PLUGIN_NAME ),
+						esc_url( admin_url( 'plugins.php' ) )
+					),
+					ai1wmue_allowed_html_tags()
+				)
+			);
+		}
+	}
+}
 
 // ===========================================================================
 // = All app initialization is done in Ai1wmue_Main_Controller __constructor =
